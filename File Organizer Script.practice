@@ -1,0 +1,56 @@
+import os
+import shutil
+from collections import defaultdict
+def organize_files():
+    file_types = {
+    "Images":[".jpg",".jpeg",".png",".gif",".bmp",".tiff"],
+    "Videos": [".mp4", ".mkv", ".mov", ".avi", ".wmv", ".flv"],
+    "Documents": [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt"],
+    "Audio": [".mp3", ".wav", ".aac", ".flac", ".ogg"],
+    "Others": []
+}
+folder_path=input("Enter the folder path to organize").strip()
+if not os.path.isdir(folder_path):
+    print("Error: The specified folder path is invalid")
+    return
+for category in file_types.keys():
+    subfolder_path=os.path.join(folder_path,category)
+    os.makedirs(subfolder_path,exist_ok=True)
+    file_count=defaultdict(int)
+    for file_name in os.listdir(folder_path):
+        file_path=os.path.join(folder_path, file_name)
+        if os.path.isdir(file_path):
+            continue
+        _, extension = os.path.splitext(file_name)
+        extension = extension.lower()
+        destination_category = "others"
+        for category, extensions in file_types.items():
+            if extension in extensions:
+                destination_category = category
+                break
+            destination_folder = os.path.join(folder_path, destination_category)
+            shutil.move(file_path, destination_folder)
+            file_count[destination_category] +=1
+    print("\n Organization Summary")
+    for catogery, count in file_count.items():
+        print(f"{category}:{count} file(s) moved")
+    for category in file_types.keys():
+        if category not in file_count:
+            print(f"{category}: 0 file(s) moved")
+if __name__ == "__main__":
+    organize_files()
+    
+
+                        
+
+
+
+
+
+
+
+
+
+
+   
+
